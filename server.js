@@ -1,16 +1,19 @@
 var express = require('express'); //express must be installed 
+var path = require('path');
 
 //create server objects
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+//serve the static web content
+app.use(express.static(path.join(__dirname, 'srv'))); 
 
 //register route - this will be the entry point for our
 //single page app
-app.get('/', function(req, res){
+/*app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
-});
+});*/
 
 
 //start server
