@@ -24,6 +24,21 @@ server.listen(8081, function()
 io.on('connection', function(socket)
 { 
     console.log("a user has connected to socket:" + socket.id);
+
+    //create/join room
+    socket.on('create', function(room) 
+    {
+        console.log('connected ' + socket.id + ' to ' + room);
+        socket.join(room);
+    });
+    //list users connected to room
+    socket.on('users', function(room) 
+    {
+
+        var users = io.sockets.adapter.rooms[room].sockets;
+        console.log("connected users\n=================");
+        console.log(users);
+    });
 });
 
 

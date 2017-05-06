@@ -1,4 +1,13 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io();
+  var socket = io.connect();
+  socket.emit('create', 'testRoom');
+  //socket.emit('users', 'testRoom');
+
+  function users()
+  {
+    socket.emit('users', 'testRoom');
+  }
 </script>
+
+<button onclick="users()">List Connected Users</button> 
