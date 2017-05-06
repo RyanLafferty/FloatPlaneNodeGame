@@ -2,8 +2,16 @@ var socket;
   
 function host()
 {
+    var room = document.getElementById('room-name').value
+
     socket = io.connect();
-    socket.emit('create', 'testRoom');
+    if(socket == null || socket == undefined)
+    {
+        alert("Could not connect to server");
+        return;
+    }
+
+    socket.emit('create', room);
 }
 
 function join()
