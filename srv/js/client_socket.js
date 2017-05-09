@@ -49,9 +49,27 @@ socket.on('joined', function(room)
 
     //log join
     console.log("Joined: " + room);
+
+    //get user list
+    socket.emit('get_user_list', room);
 });
 
-socket.on('error', function(res)
+socket.on('user_list', function(user_list)
+{
+    var inner = "";
+    var i = 0;
+    console.log(user_list);
+    for(i = 0; i < user_list.length; i++)
+    {
+        inner += user_list[i] + "\n";
+        //console.log(inner);
+    }
+
+    document.getElementById("user_list").innerHTML = inner;
+    document.getElementById("user_list").style.visibility = "visible";
+});
+
+socket.on('error_res', function(res)
 {
     //TODO: indicate errors in a cleaner way
     console.log(res);

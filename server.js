@@ -82,7 +82,7 @@ io.on('connection', function(socket)
         {
             //TODO return something to indicate cannot create room
             console.log("Broadcasting error message now");
-            socket.emit('error', 'failed to create room');
+            socket.emit('error_res', 'failed to create room');
         }
     });
 
@@ -127,10 +127,16 @@ io.on('connection', function(socket)
     });
 
     //list users connected to room
-    socket.on('users', function(room) 
+    socket.on('get_user_list', function(room) 
     {
+        var user_list = [];
         var users = io.sockets.adapter.rooms[room].sockets;
         console.log("connected users\n=================");
         console.log(users);
+        for(user in users)
+        {
+            user_list.push(user);
+        }
+        socket.emit('user_list', user_list);
     });
 });
