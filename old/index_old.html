@@ -1,0 +1,18 @@
+<script src="/socket.io/socket.io.js"></script>
+<script> 
+  //socket.emit('users', 'testRoom');
+  var socket;
+  
+  function connect()
+  {
+    socket = io.connect();
+    socket.emit('create', 'testRoom');
+  }
+  function users()
+  {
+    socket.emit('users', 'testRoom');
+  }
+</script>
+
+<button onclick="connect()">Connect</button> 
+<button onclick="users()">List Connected Users</button> 

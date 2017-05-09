@@ -13,6 +13,9 @@
         //game
         //game state information
 
+//Error testing to ensure sockets are handled correctly
+//also implement a closing handshake in order to close sockets
+
 var express = require('express'); //express must be installed 
 var path = require('path');
 var randomstring = require("randomstring"); //randomstring must be installed
@@ -58,10 +61,9 @@ io.on('connection', function(socket)
                 {
                     size++;
                 }
-                console.log(size);
                 if(size >= 1)
                 {
-                    console.log("connected users\n=================");
+                    console.log("Error: could not create room\nconnected users\n=================");
                     console.log("size = " + size);
                     console.log(users);
                     create = false;
@@ -74,12 +76,56 @@ io.on('connection', function(socket)
         {
             socket.join(room);
             console.log('connected ' + socket.id + ' to ' + room);
+            socket.emit('joined', room);
         }
         else
         {
             //TODO return something to indicate cannot create room
+            console.log("Broadcasting error message now");
+            socket.emit('error', 'failed to create room');
         }
     });
+
+    //join room
+    socket.on('join', function(room) 
+    {
+        var join = true;
+        if(room == null || room == undefined || room == '')
+        {
+            //TODO return failure
+        }
+
+        //check if the roome exists and join them to the room
+        if(io.sockets.adapter.rooms[room] != undefined)
+        {
+            var users = io.sockets.adapter.rooms[room].sockets;
+            if(users != undefined)
+            {
+                var size = 0;
+                for(user in users)
+                {
+                    size++;
+                }
+                if(size == 1)
+                {
+                    socket.join(room);
+                    console.log('connected ' + socket.id + ' to ' + room);
+                    socket.emit('joined', room);
+                }
+                else
+                {
+                    console.log("Connected Users = " + size);
+
+                    //TODO return failure
+                }
+            }
+        }
+        else
+        {
+            //TODO return failure
+        }
+    });
+
     //list users connected to room
     socket.on('users', function(room) 
     {

@@ -1,11 +1,11 @@
 var socket;
+
+socket = io.connect();
   
 function host()
 {
     var room = document.getElementById('room-name').value
-    //document.cookie = room;
 
-    socket = io.connect();
     if(socket == null || socket == undefined)
     {
         alert("Could not connect to server");
@@ -17,8 +17,15 @@ function host()
 
 function join()
 {
-    socket = io.connect();
-    //todo join room
+    var room = document.getElementById('room-name').value
+
+    if(socket == null || socket == undefined)
+    {
+        alert("Could not connect to server");
+        return;
+    }
+
+    socket.emit('join', room);
 }
 
 function users()
@@ -31,3 +38,22 @@ function connect()
     var room = document.cookie;
     alert(room);
 }
+
+socket.on('joined', function(room)
+{
+    //update html
+    document.getElementById("home").style.visibility = "hidden";
+    document.getElementById("game").style.visibility = "visible";
+    document.title = room;
+    document.getElementById("room_header").innerHTML = room;
+
+    //log join
+    console.log("Joined: " + room);
+});
+
+socket.on('error', function(res)
+{
+    //TODO: indicate errors in a cleaner way
+    console.log(res);
+    alert(res);
+});
