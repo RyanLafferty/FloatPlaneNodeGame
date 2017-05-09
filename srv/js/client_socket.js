@@ -3,7 +3,7 @@ var socket;
 function host()
 {
     var room = document.getElementById('room-name').value
-    document.cookie = room;
+    //document.cookie = room;
 
     socket = io.connect();
     if(socket == null || socket == undefined)
