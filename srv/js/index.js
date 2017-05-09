@@ -1,9 +1,8 @@
 var socket;
-  
+
 function host()
 {
     var room = document.getElementById('room-name').value
-    document.cookie = room;
 
     socket = io.connect();
     if(socket == null || socket == undefined)
@@ -12,22 +11,12 @@ function host()
         return;
     }
 
+    //TODO chang to check if room exists
     socket.emit('create', room);
-}
-
-function join()
-{
-    socket = io.connect();
-    //todo join room
+    document.cookie = room;
 }
 
 function users()
 {
     socket.emit('users', 'testRoom');
-}
-
-function connect()
-{
-    var room = document.cookie;
-    alert(room);
 }

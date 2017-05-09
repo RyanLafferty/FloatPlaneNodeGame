@@ -1,4 +1,8 @@
 //TODO
+//On home page have the user log into a default room and when
+    //join is pressed: check if game room is full
+    //host is pressed: check if room exists and has players
+
 //create room object:
     //object will store:
         //password
@@ -23,9 +27,10 @@ app.use(express.static(path.join(__dirname, 'srv')));
 
 //register route - this will be the entry point for our
 //single page app
-/*app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-});*/
+//app.get('/rooms/:RID', function(req, res){
+//    console.log("asdasd");
+    //res.sendFile(__dirname + '/srv/home.html');
+//});
 
 
 //start server
@@ -47,14 +52,17 @@ io.on('connection', function(socket)
         {
             room = randomstring.generate(16);
         }
-        console.log('connected ' + socket.id + ' to ' + room);
-        socket.join(room);
+        //console.log('connected ' + socket.id + ' to ' + room);
+        //socket.join(room);
+        var users = io.sockets.adapter.rooms[room].sockets;
+        console.log(users.length);
     });
     //list users connected to room
     socket.on('users', function(room) 
     {
         var users = io.sockets.adapter.rooms[room].sockets;
         console.log("connected users\n=================");
+        console.log(users.length);
         console.log(users);
     });
 });
