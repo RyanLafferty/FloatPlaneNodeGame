@@ -133,6 +133,7 @@ io.on('connection', function(socket)
                         room: room,
                         players:[user, socket.id],
                         game:'Tic-Tac-Toe',
+                        current_move:0,
                         grid:grid };
                     games[room] = game;
                     console.log("current game list\n============");
@@ -193,14 +194,29 @@ io.on('connection', function(socket)
 
         if(player >= 0)
         {
-            games[current_room].grid[move.y][move.x] = player;
-            console.log(current_room + ": Current Game State: ");
-            console.log(games[current_room].grid);
-            io.in(current_room).emit('player_move',
-            {   player:player,
-                x:move.x,
-                y:move.y
-            });
+            if(games[current_room].grid[move.y][move.x] === -1 && games[current_room].current_move === player)
+            {
+                games[current_room].grid[move.y][move.x] = player;
+                if(player === 0)
+                {
+                    games[current_room].current_move = 1;
+                }
+                else
+                {
+                    games[current_room].current_move = 0;
+                }
+                console.log(current_room + ": Current Game State: ");
+                console.log(games[current_room].grid);
+                io.in(current_room).emit('player_move',
+                {   player:player,
+                    x:move.x,
+                    y:move.y
+                });
+            }
+            else
+            {
+                //TODO error
+            }
         }
         else
         {
