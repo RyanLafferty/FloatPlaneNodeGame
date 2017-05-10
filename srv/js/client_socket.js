@@ -3,6 +3,17 @@ var canvas = document.getElementById("game_canvas");
 var ctx2d = canvas.getContext("2d");
 var width = 640;
 var height = 480;
+
+//initilize grid bounds
+var gridBounds = new Array();
+for(i = 0; i < 3; i++)
+{
+    gridBounds[i] = new Array();
+    for(j = 0; j < 3; j++)
+    {
+        gridBounds[i][j] = new Array();
+    }
+}
   
 function host()
 {
@@ -45,6 +56,12 @@ function start_game()
 {
     var lineStartX = width / 3;
     var lineStartY = height / 3;
+    var x;
+    var y;
+    var minx;
+    var miny;
+    var maxx;
+    var maxy;
 
     //draw vertical lines
     ctx2d.moveTo(lineStartX, 0);
@@ -65,7 +82,75 @@ function start_game()
     ctx2d.moveTo(0, lineStartY);
     ctx2d.lineTo(width, lineStartY);
     ctx2d.stroke();
+
+    lineStartX = width / 3;
+    lineStartY = height / 3;
+
+    //store grid bounds
+    for(i = 0; i < 3; i++)
+    {
+        //i = y
+        miny = parseInt((lineStartY * i) + 1);
+        maxy = parseInt((lineStartY * i) + lineStartY - 1);
+        for(j = 0; j < 3; j++)
+        {
+            minx = parseInt((lineStartX * j) + 1);
+            maxx = parseInt((lineStartX * j) + lineStartX - 1);
+
+            gridBounds[i][j][0] = {x:minx, y:miny}; //top left
+            gridBounds[i][j][1] = {x:maxx, y:miny}; //top right
+            gridBounds[i][j][2] = {x:maxx, y:maxy}; //bottom right
+            gridBounds[i][j][3] = {x:minx, y:maxy}; //bottom left
+        }
+    }
+
+    //print grid bounds
+    for(i = 0; i < 3; i++)
+    {
+        for(j = 0; j < 3; j++)
+        {
+            for(k = 0; k < 4; k++)
+            {
+                console.log(gridBounds[i][j][k]);
+            }
+        }
+    }
+
 }
+
+function getMousePos(evt) 
+{
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+canvas.addEventListener('mousedown', function(evt) 
+{
+        var mousePos = getMousePos(evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        console.log(message);
+
+        for(i = 0; i < 3; i++)
+        {
+            for(j = 0; j < 3; j++)
+            {
+
+                if(mousePos.x >= gridBounds[i][j][0].x && mousePos.x <= gridBounds[i][j][1].x)
+                {
+                    if(mousePos.y >= gridBounds[i][j][0].y && mousePos.y <= gridBounds[i][j][2].y)
+                    {
+                        //console.log("i: " + i + " j: " + j);
+                        console.log("x: " + j + " y: " + i);
+                        break;
+                    }
+                }
+            }
+        }
+}, false);
+
 
 socket.on('joined', function(room)
 {
