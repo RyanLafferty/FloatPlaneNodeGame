@@ -25,6 +25,8 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var games = {};
+
 //serve the static web content
 app.use(express.static(path.join(__dirname, 'srv'))); 
 
@@ -99,17 +101,42 @@ io.on('connection', function(socket)
         if(io.sockets.adapter.rooms[room] != undefined)
         {
             var users = io.sockets.adapter.rooms[room].sockets;
+            var player;
             if(users != undefined)
             {
                 var size = 0;
                 for(user in users)
                 {
+                    player = user;
                     size++;
                 }
                 if(size == 1)
                 {
                     socket.join(room);
                     console.log('connected ' + socket.id + ' to ' + room);
+
+                    //create room
+                    var grid = new Array();
+                    for(i = 0; i < 3; i++)
+                    {
+                        grid[i] = new Array();
+                        for(j = 0; j < 3; j++)
+                        {
+                            grid[i][j] = -1;
+                        }
+                    }
+                    var game = {
+                        room: room,
+                        players:[user, socket.id],
+                        game:'Tic-Tac-Toe',
+                        grid:grid };
+                    games[room] = game;
+                    console.log("current game list\n============");
+                    for(g in games)
+                    {
+                        console.log(game);
+                    }
+
                     socket.emit('joined', room);
                 }
                 else
@@ -138,5 +165,11 @@ io.on('connection', function(socket)
             user_list.push(user);
         }
         socket.emit('user_list', user_list);
+    });
+
+    socket.on('move', function(move)
+    {
+        
+
     });
 });

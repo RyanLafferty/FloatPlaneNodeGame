@@ -144,6 +144,7 @@ canvas.addEventListener('mousedown', function(evt)
                     {
                         //console.log("i: " + i + " j: " + j);
                         console.log("x: " + j + " y: " + i);
+                        socket.emit('move', {x:j, y:i});
                         break;
                     }
                 }
@@ -152,6 +153,7 @@ canvas.addEventListener('mousedown', function(evt)
 }, false);
 
 
+//update page
 socket.on('joined', function(room)
 {
     //update html
@@ -168,6 +170,7 @@ socket.on('joined', function(room)
     start_game();
 });
 
+//update user list
 socket.on('user_list', function(user_list)
 {
     var inner = "";
@@ -183,6 +186,7 @@ socket.on('user_list', function(user_list)
     document.getElementById("user_list").style.visibility = "visible";
 });
 
+//handle errors
 socket.on('error_res', function(res)
 {
     //TODO: indicate errors in a cleaner way
