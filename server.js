@@ -42,6 +42,7 @@ io.on('connection', function(socket)
 { 
     var current_room;
     console.log("a user has connected to socket:" + socket.id);
+    socket.emit("socket_id", socket.id)
 
     //create/join room
     socket.on('create', function(room) 

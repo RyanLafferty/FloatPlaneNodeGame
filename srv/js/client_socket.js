@@ -1,8 +1,10 @@
 var socket = io.connect();
+var socket_id;
 var canvas = document.getElementById("game_canvas");
 var ctx2d = canvas.getContext("2d");
 var width = 480;
 var height = 480;
+var player = -1;
 
 var x_img = document.getElementById("x_img");
 var o_img = document.getElementById("o_img");
@@ -29,6 +31,7 @@ function host()
     }
 
     socket.emit('create', room);
+    player = 0;
 }
 
 function join()
@@ -42,6 +45,7 @@ function join()
     }
 
     socket.emit('join', room);
+    player = 1;
 }
 
 function users()
@@ -156,6 +160,13 @@ canvas.addEventListener('mousedown', function(evt)
 }, false);
 
 
+//update socket id
+socket.on('socket_id', function(id)
+{
+    //update socket id
+    socket_id = id;
+});
+
 //update page
 socket.on('joined', function(room)
 {
@@ -192,7 +203,17 @@ socket.on('user_list', function(user_list)
 //update user list
 socket.on('player_move', function(move)
 {
-    ctx2d.drawImage(x_img, gridBounds[move.y][move.x][0].x, gridBounds[move.y][move.x][0].y, width / 3, height / 3)
+    var img;
+
+    if(move.player === 0)
+    {
+        img = x_img;
+    }
+    else if(move.player === 1)
+    {
+        img = o_img;
+    }
+    ctx2d.drawImage(img, gridBounds[move.y][move.x][0].x, gridBounds[move.y][move.x][0].y, width / 3, height / 3)
 });
 
 //handle errors
