@@ -1,8 +1,11 @@
 var socket = io.connect();
 var canvas = document.getElementById("game_canvas");
 var ctx2d = canvas.getContext("2d");
-var width = 640;
+var width = 480;
 var height = 480;
+
+var x_img = document.getElementById("x_img");
+var o_img = document.getElementById("o_img");
 
 //initilize grid bounds
 var gridBounds = new Array();
@@ -184,6 +187,12 @@ socket.on('user_list', function(user_list)
 
     document.getElementById("user_list").innerHTML = inner;
     document.getElementById("user_list").style.visibility = "visible";
+});
+
+//update user list
+socket.on('player_move', function(move)
+{
+    ctx2d.drawImage(x_img, gridBounds[move.y][move.x][0].x, gridBounds[move.y][move.x][0].y, width / 3, height / 3)
 });
 
 //handle errors

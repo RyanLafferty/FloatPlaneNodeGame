@@ -167,9 +167,11 @@ io.on('connection', function(socket)
         {
             user_list.push(user);
         }
-        socket.emit('user_list', user_list);
+        io.in(current_room).emit('user_list', user_list);
     });
 
+    //TODO add logic to determine if its the current players turn
+    //TODO add logic to prevent squares from being over written
     socket.on('move', function(move)
     {
         var player = -1;
@@ -193,6 +195,11 @@ io.on('connection', function(socket)
             games[current_room].grid[move.y][move.x] = player;
             console.log(current_room + ": Current Game State: ");
             console.log(games[current_room].grid);
+            io.in(current_room).emit('player_move',
+            {   player:player,
+                x:move.x,
+                y:move.y
+            });
         }
         else
         {
