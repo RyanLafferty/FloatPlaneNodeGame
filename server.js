@@ -40,6 +40,7 @@ server.listen(8081, function()
 //function that runs when a user connects to a socket
 io.on('connection', function(socket)
 { 
+    var current_room;
     console.log("a user has connected to socket:" + socket.id);
 
     //create/join room
@@ -78,6 +79,7 @@ io.on('connection', function(socket)
         {
             socket.join(room);
             console.log('connected ' + socket.id + ' to ' + room);
+            current_room = room;
             socket.emit('joined', room);
         }
         else
@@ -114,6 +116,7 @@ io.on('connection', function(socket)
                 {
                     socket.join(room);
                     console.log('connected ' + socket.id + ' to ' + room);
+                    current_room = room;
 
                     //create room
                     var grid = new Array();
@@ -169,7 +172,33 @@ io.on('connection', function(socket)
 
     socket.on('move', function(move)
     {
-        
+        var player = -1;
+        if(games[current_room] == undefined || games[current_room] == null)
+        {
+            //TODO return error
+            return;
+        }
+
+        if(games[current_room].players[0] === socket.id)
+        {
+            player = 0;
+        }
+        else if(games[current_room].players[1] === socket.id)
+        {
+            player = 1;
+        }
+
+        if(player >= 0)
+        {
+            games[current_room].grid[move.y][move.x] = player;
+            console.log(current_room + ": Current Game State: ");
+            console.log(games[current_room].grid);
+        }
+        else
+        {
+            //TODO report error
+        }
+
 
     });
 });
