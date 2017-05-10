@@ -1,6 +1,8 @@
-var socket;
-
-socket = io.connect();
+var socket = io.connect();
+var canvas = document.getElementById("game_canvas");
+var ctx2d = canvas.getContext("2d");
+var width = 640;
+var height = 480;
   
 function host()
 {
@@ -39,6 +41,32 @@ function connect()
     alert(room);
 }
 
+function start_game()
+{
+    var lineStartX = width / 3;
+    var lineStartY = height / 3;
+
+    //draw vertical lines
+    ctx2d.moveTo(lineStartX, 0);
+    ctx2d.lineTo(lineStartX, height);
+    ctx2d.stroke();
+
+    lineStartX = lineStartX * 2;
+    ctx2d.moveTo(lineStartX, 0);
+    ctx2d.lineTo(lineStartX, height);
+    ctx2d.stroke();
+
+    //draw horizontal lines
+    ctx2d.moveTo(0, lineStartY);
+    ctx2d.lineTo(width, lineStartY);
+    ctx2d.stroke();
+
+    lineStartY = lineStartY * 2;
+    ctx2d.moveTo(0, lineStartY);
+    ctx2d.lineTo(width, lineStartY);
+    ctx2d.stroke();
+}
+
 socket.on('joined', function(room)
 {
     //update html
@@ -52,6 +80,7 @@ socket.on('joined', function(room)
 
     //get user list
     socket.emit('get_user_list', room);
+    start_game();
 });
 
 socket.on('user_list', function(user_list)
