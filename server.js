@@ -249,7 +249,7 @@ io.on('connection', function(socket)
                     if(match === true)
                     {
                         console.log("winner: " + games[current_room].grid[j][i]);
-                        io.in(current_room).emit('player_winner', games[current_room].grid[i][j]);
+                        io.in(current_room).emit('player_winner', games[current_room].grid[j][i]);
                     }
                 }
                 //check diagonal matches

@@ -213,7 +213,27 @@ socket.on('player_move', function(move)
     {
         img = o_img;
     }
-    ctx2d.drawImage(img, gridBounds[move.y][move.x][0].x, gridBounds[move.y][move.x][0].y, width / 3, height / 3)
+    ctx2d.drawImage(img, gridBounds[move.y][move.x][0].x, gridBounds[move.y][move.x][0].y, width / 3, height / 3);
+});
+
+//update user list
+socket.on('player_winner', function(winner)
+{
+    //TODO: indicate winner in a more meaningful way
+    //document.getElementById("home").style.visibility = "visible";
+    //document.getElementById("game").style.visibility = "hidden";
+    //document.title = 'Ryan Lafferty';
+    console.log("player: " + player);
+    console.log("winner: " + winner);
+    //location.href = "";
+    if(player === winner)
+    {
+        alert("Congratulations: You win");
+    }
+    else if(player >= 0)
+    {
+        alert("Sorry: You have lost");
+    }
 });
 
 //handle errors
