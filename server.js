@@ -1,17 +1,9 @@
 //TODO
-//On home page have the user log into a default room and when
-    //join is pressed: check if game room is full
-    //host is pressed: check if room exists and has players
-
 //create room object:
     //object will store:
         //password
         //connected users
         //game object
-//create game object:
-    //game object will store:
-        //game
-        //game state information
 
 //Error testing to ensure sockets are handled correctly
 //also implement a closing handshake in order to close sockets
