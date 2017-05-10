@@ -212,6 +212,61 @@ io.on('connection', function(socket)
                     x:move.x,
                     y:move.y
                 });
+
+                //check for winner
+                //check horizontal match
+                for(i = 0; i < 3; i++)
+                {
+                    match = true;
+                    for(j = 0; j < 2; j++)
+                    {
+                        if(games[current_room].grid[i][j] < 0 
+                           || games[current_room].grid[i][j] != games[current_room].grid[i][j+1])
+                        {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if(match === true)
+                    {
+                        console.log("winner: " + games[current_room].grid[i][j]);
+                        io.in(current_room).emit('player_winner', games[current_room].grid[i][j]);
+                    }
+                }
+                //check vertical match
+                for(i = 0; i < 3; i++)
+                {
+                    match = true;
+                    for(j = 0; j < 2; j++)
+                    {
+                        if(games[current_room].grid[j][i] < 0 
+                           || games[current_room].grid[j][i] != games[current_room].grid[j+1][i])
+                        {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if(match === true)
+                    {
+                        console.log("winner: " + games[current_room].grid[j][i]);
+                        io.in(current_room).emit('player_winner', games[current_room].grid[i][j]);
+                    }
+                }
+                //check diagonal matches
+                if(games[current_room].grid[1][1] >= 0 &&
+                   games[current_room].grid[0][0] === games[current_room].grid[1][1] &&
+                   games[current_room].grid[1][1] === games[current_room].grid[2][2])
+                {
+                    console.log("winner: " + games[current_room].grid[1][1]);
+                    io.in(current_room).emit('player_winner', games[current_room].grid[1][1]);
+                }
+                else if(games[current_room].grid[1][1] >= 0 &&
+                        games[current_room].grid[2][0] === games[current_room].grid[1][1] &&
+                        games[current_room].grid[1][1] === games[current_room].grid[0][2])
+                {
+                    console.log("winner: " + games[current_room].grid[1][1]);
+                    io.in(current_room).emit('player_winner', games[current_room].grid[1][1]);
+                }
             }
             else
             {
