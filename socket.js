@@ -1,13 +1,6 @@
-/*
-    Desc: 
-    Args: none
-    Ret: n/a
-*/
-
 module.exports = 
 {
     //TODO: add logic to determine a draw
-    //TODO: add error handling (handled invalid move locations etc)
     /*
     Desc: The player move function is called when the player requests to make
     a move, this function will update the game state if the player is making a 
@@ -95,6 +88,7 @@ module.exports =
                     {
                         console.log("winner: " + games[current_room].grid[i][j]);
                         io.in(current_room).emit('player_winner', games[current_room].grid[i][j]);
+                        return;
                     }
                 }
                 //check vertical match
@@ -114,6 +108,7 @@ module.exports =
                     {
                         console.log("winner: " + games[current_room].grid[j][i]);
                         io.in(current_room).emit('player_winner', games[current_room].grid[j][i]);
+                        return;
                     }
                 }
                 //check diagonal matches
@@ -123,6 +118,7 @@ module.exports =
                 {
                     console.log("winner: " + games[current_room].grid[1][1]);
                     io.in(current_room).emit('player_winner', games[current_room].grid[1][1]);
+                    return;
                 }
                 else if(games[current_room].grid[1][1] >= 0 &&
                         games[current_room].grid[2][0] === games[current_room].grid[1][1] &&
@@ -130,23 +126,45 @@ module.exports =
                 {
                     console.log("winner: " + games[current_room].grid[1][1]);
                     io.in(current_room).emit('player_winner', games[current_room].grid[1][1]);
+                    return;
+                }
+
+                //check for draw
+                draw = true;
+                for(i = 0; i < 3; i++)
+                {
+                    for(j = 0; j < 3; j++)
+                    {
+                        if(games[current_room].grid[j][i] < 0)
+                        {
+                            draw = false;
+                            break;
+                        }
+                    }
+                }
+                if(draw === true)
+                {
+                    console.log("Draw");
+                    io.in(current_room).emit('player_draw', 'Draw');
+                    return;
                 }
             }
             else
             {
                 console.log("Error[Invalid Room]: Broadcasting error message now");
                 socket.emit('error_res', 'Error[Invalid Room]: Could not make move');
+                return;
             }
         }
         else
         {
             console.log("Error[Player Not In Room]: Broadcasting error message now");
             socket.emit('error_res', 'Error[Player Not In Room]: Could not make move');
+            return;
         }
     },
 
 
-    //TODO add error handling for invalid room
     /*
     Desc: The following function is called when a user socket requests 
     the connected users from a given room, this function will return the
@@ -164,6 +182,12 @@ module.exports =
     */
     GetUserList: function(room, io, socket, current_room) 
     {
+        if(room == undefined || room == null)
+        {
+            console.log("Error[Room Does Not Exist]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Room Does Not Exist]: Could not return room list');
+            return;
+        }
         var user_list = [];
         var users = io.sockets.adapter.rooms[room].sockets;
         console.log("connected users\n=================");
@@ -194,7 +218,8 @@ module.exports =
         var join = true;
         if(room == null || room == undefined || room == '')
         {
-            //TODO return failure
+            console.log("Error[Room Does Not Exist]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Room Does Not Exist]: Could not join requested room');
             return undefined;
         }
 
@@ -244,16 +269,16 @@ module.exports =
                 }
                 else
                 {
-                    console.log("Connected Users = " + size);
-
-                    //TODO return failure
+                    console.log("Error[Room Full]: Broadcasting error message now");
+                    socket.emit('error_res', 'Error[Room Full]: Could not join requested room');
                     return undefined;
                 }
             }
         }
         else
         {
-            //TODO return failure
+            console.log("Error[Room Does Not Exist]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Room Does Not Exist]: Could not join requested room');
             return undefined;
         }
     },

@@ -236,6 +236,11 @@ socket.on('player_winner', function(winner)
     }
 });
 
+socket.on('player_draw', function(draw)
+{
+    alert("Draw");
+});
+
 //handle errors
 socket.on('error_res', function(res)
 {
