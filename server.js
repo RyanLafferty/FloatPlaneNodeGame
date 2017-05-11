@@ -154,15 +154,7 @@ io.on('connection', function(socket)
     //list users connected to room
     socket.on('get_user_list', function(room) 
     {
-        var user_list = [];
-        var users = io.sockets.adapter.rooms[room].sockets;
-        console.log("connected users\n=================");
-        console.log(users);
-        for(user in users)
-        {
-            user_list.push(user);
-        }
-        io.in(current_room).emit('user_list', user_list);
+        socketFun.GetUserList(room, io, current_room);
     });
 
     socket.on('move', function(move)

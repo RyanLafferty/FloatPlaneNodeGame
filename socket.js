@@ -111,5 +111,18 @@ module.exports =
             console.log("Error[Player Not In Room]: Broadcasting error message now");
             socket.emit('error_res', 'Error[Player Not In Room]: Could not make move');
         }
+    },
+
+    GetUserList: function(room, io, current_room) 
+    {
+        var user_list = [];
+        var users = io.sockets.adapter.rooms[room].sockets;
+        console.log("connected users\n=================");
+        console.log(users);
+        for(user in users)
+        {
+            user_list.push(user);
+        }
+        io.in(current_room).emit('user_list', user_list);
     }
 };
