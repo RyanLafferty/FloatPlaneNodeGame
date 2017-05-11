@@ -6,10 +6,12 @@ module.exports =
         var player = -1;
         if(games[current_room] == undefined || games[current_room] == null)
         {
-            //TODO return error
+            console.log("Error[Room Does Not Exist]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Room Does Not Exist]: Could not make move');
             return;
         }
 
+        //Check which player made the move
         if(games[current_room].players[0] === socket.id)
         {
             player = 0;
@@ -19,8 +21,10 @@ module.exports =
             player = 1;
         }
 
+        //Determine if player is in room
         if(player >= 0)
         {
+            //Determine if the move can be made
             if(games[current_room].grid[move.y][move.x] === -1 && games[current_room].current_move === player)
             {
                 games[current_room].grid[move.y][move.x] = player;
@@ -32,6 +36,7 @@ module.exports =
                 {
                     games[current_room].current_move = 0;
                 }
+                //Log current game state
                 console.log(current_room + ": Current Game State: ");
                 console.log(games[current_room].grid);
                 io.in(current_room).emit('player_move',
@@ -97,12 +102,14 @@ module.exports =
             }
             else
             {
-                //TODO error
+                console.log("Error[Invalid Room]: Broadcasting error message now");
+                socket.emit('error_res', 'Error[Invalid Room]: Could not make move');
             }
         }
         else
         {
-            //TODO report error
+            console.log("Error[Player Not In Room]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Player Not In Room]: Could not make move');
         }
     }
 };

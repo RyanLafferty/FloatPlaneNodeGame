@@ -79,7 +79,6 @@ io.on('connection', function(socket)
         }
         else
         {
-            //TODO return something to indicate cannot create room
             console.log("Broadcasting error message now");
             socket.emit('error_res', 'failed to create room');
         }

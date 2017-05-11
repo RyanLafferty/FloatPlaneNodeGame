@@ -241,5 +241,5 @@ socket.on('error_res', function(res)
 {
     //TODO: indicate errors in a cleaner way
     console.log(res);
-    alert(res);
+    //alert(res);
 });
