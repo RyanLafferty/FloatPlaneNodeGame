@@ -145,6 +145,23 @@ module.exports =
         }
     },
 
+
+    //TODO add error handling for invalid room
+    /*
+    Desc: The following function is called when a user socket requests 
+    the connected users from a given room, this function will return the
+    user list of a given room.
+    Args:
+        room(String): The room which the player would list the users from.
+        move(Object): The move object which contains the x and y (int) coordinates
+        where the move is to be made.
+        current_room(String): The room in which the player resides.
+        io(Object): The socket.io object which is to be used to emit messages
+        to sockets within the room.
+        socket(Object): The connected socket object which is used to emit messages back
+        to the socket.
+    Ret: Nothing
+    */
     GetUserList: function(room, io, socket, current_room) 
     {
         var user_list = [];
@@ -158,6 +175,20 @@ module.exports =
         io.in(current_room).emit('user_list', user_list);
     }, 
 
+    /*
+    Desc: This function is called when a socket requests to join a room,
+    the following function will attempt to join a player to a room.
+    Args:
+        room(String): The room which the player would like to join.
+        io(Object): The socket.io object which is to be used to emit messages
+        to sockets within the room.
+        socket(Object): The connected socket object which is used to emit messages back
+        to the socket.
+        games(Object): The games object which contains the game state information
+        of all currently in progress games (this object will be updated if the move
+        player is allowed to join).
+    Ret: On success returns room, on failure return undefined.
+    */
     Join: function(room, io, socket, games) 
     {
         var join = true;
@@ -227,6 +258,18 @@ module.exports =
         }
     },
 
+    /*
+    Desc: This function is called when a connected socket requests to create
+    a room, if the requested room is free the following function will attempt
+    to join the given socket to the room.
+    Args:
+        room(String): The room in which the player would like to create.
+        io(Object): The socket.io object which is to be used to emit messages
+        to sockets within the room.
+        socket(Object): The connected socket object which is used to emit messages back
+        to the socket.
+    Ret: Nothing
+    */
     Create: function(room, io, socket) 
     {
         var create = true;
