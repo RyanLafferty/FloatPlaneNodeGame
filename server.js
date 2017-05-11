@@ -40,49 +40,7 @@ io.on('connection', function(socket)
 
     //create/join room
     socket.on('create', function(room) 
-    {
-        var create = true;
-        if(room == null || room == undefined || room == '')
-        {
-            room = randomstring.generate(16);
-        }
-
-        //check if room has been created already or if there is already
-        //a user in the room
-        if(io.sockets.adapter.rooms[room] != undefined)
-        {
-            var users = io.sockets.adapter.rooms[room].sockets;
-            if(users != undefined)
-            {
-                var size = 0;
-                for(user in users)
-                {
-                    size++;
-                }
-                if(size >= 1)
-                {
-                    console.log("Error: could not create room\nconnected users\n=================");
-                    console.log("size = " + size);
-                    console.log(users);
-                    create = false;
-                }
-            }
-        }
-
-        //if the room is available, then join the user to the room
-        if(create == true)
-        {
-            socket.join(room);
-            console.log('connected ' + socket.id + ' to ' + room);
-            current_room = room;
-            socket.emit('joined', room);
-        }
-        else
-        {
-            console.log("Broadcasting error message now");
-            socket.emit('error_res', 'failed to create room');
-        }
-    });
+    {current_room = socketFun.Create(room, io, socket);});
 
     //join room
     socket.on('join', function(room) 
