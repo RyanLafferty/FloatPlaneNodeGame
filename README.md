@@ -18,8 +18,8 @@ Table of Contents
 ## Installation
 1. Install node using the following [link](https://nodejs.org/en/)
 2. Install the above node dependancies using the instructions below:
-'''
+```
   npm install socket.io
   npm install express
   npm install randomstring
-'''
+```
