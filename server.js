@@ -86,77 +86,13 @@ io.on('connection', function(socket)
 
     //join room
     socket.on('join', function(room) 
-    {
-        var join = true;
-        if(room == null || room == undefined || room == '')
-        {
-            //TODO return failure
-        }
-
-        //check if the roome exists and join them to the room
-        if(io.sockets.adapter.rooms[room] != undefined)
-        {
-            var users = io.sockets.adapter.rooms[room].sockets;
-            var player;
-            if(users != undefined)
-            {
-                var size = 0;
-                for(user in users)
-                {
-                    player = user;
-                    size++;
-                }
-                if(size == 1)
-                {
-                    socket.join(room);
-                    console.log('connected ' + socket.id + ' to ' + room);
-                    current_room = room;
-
-                    //create room
-                    var grid = new Array();
-                    for(i = 0; i < 3; i++)
-                    {
-                        grid[i] = new Array();
-                        for(j = 0; j < 3; j++)
-                        {
-                            grid[i][j] = -1;
-                        }
-                    }
-                    var game = {
-                        room: room,
-                        players:[user, socket.id],
-                        game:'Tic-Tac-Toe',
-                        current_move:0,
-                        grid:grid };
-                    games[room] = game;
-                    console.log("current game list\n============");
-                    for(g in games)
-                    {
-                        console.log(game);
-                    }
-
-                    socket.emit('joined', room);
-                }
-                else
-                {
-                    console.log("Connected Users = " + size);
-
-                    //TODO return failure
-                }
-            }
-        }
-        else
-        {
-            //TODO return failure
-        }
-    });
+    {current_room = socketFun.Join(room, io, socket, games);});
 
     //list users connected to room
     socket.on('get_user_list', function(room) 
-    {
-        socketFun.GetUserList(room, io, current_room);
-    });
+    {socketFun.GetUserList(room, io, socket, current_room);});
 
+    //handle player move
     socket.on('move', function(move)
     {socketFun.PlayerMove(move, current_room, io, socket, games);});
 });

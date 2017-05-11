@@ -113,7 +113,7 @@ module.exports =
         }
     },
 
-    GetUserList: function(room, io, current_room) 
+    GetUserList: function(room, io, socket, current_room) 
     {
         var user_list = [];
         var users = io.sockets.adapter.rooms[room].sockets;
@@ -124,5 +124,75 @@ module.exports =
             user_list.push(user);
         }
         io.in(current_room).emit('user_list', user_list);
+    }, 
+
+    Join: function(room, io, socket, games) 
+    {
+        var join = true;
+        if(room == null || room == undefined || room == '')
+        {
+            //TODO return failure
+            return undefined;
+        }
+
+        //check if the roome exists and join them to the room
+        if(io.sockets.adapter.rooms[room] != undefined)
+        {
+            var users = io.sockets.adapter.rooms[room].sockets;
+            var player;
+            if(users != undefined)
+            {
+                var size = 0;
+                for(user in users)
+                {
+                    player = user;
+                    size++;
+                }
+                if(size == 1)
+                {
+                    socket.join(room);
+                    console.log('connected ' + socket.id + ' to ' + room);
+
+                    //create room
+                    var grid = new Array();
+                    for(i = 0; i < 3; i++)
+                    {
+                        grid[i] = new Array();
+                        for(j = 0; j < 3; j++)
+                        {
+                            grid[i][j] = -1;
+                        }
+                    }
+                    var game = {
+                        room: room,
+                        players:[user, socket.id],
+                        game:'Tic-Tac-Toe',
+                        current_move:0,
+                        grid:grid };
+                    games[room] = game;
+                    console.log("current game list\n============");
+                    for(g in games)
+                    {
+                        console.log(game);
+                    }
+
+                    socket.emit('joined', room);
+                    return room;
+                }
+                else
+                {
+                    console.log("Connected Users = " + size);
+
+                    //TODO return failure
+                    return undefined;
+                }
+            }
+        }
+        else
+        {
+            //TODO return failure
+            return undefined;
+        }
     }
+
 };
