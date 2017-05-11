@@ -1,6 +1,30 @@
+/*
+    Desc: 
+    Args: none
+    Ret: n/a
+*/
+
 module.exports = 
 {
     //TODO: add logic to determine a draw
+    //TODO: add error handling (handled invalid move locations etc)
+    /*
+    Desc: The player move function is called when the player requests to make
+    a move, this function will update the game state if the player is making a 
+    valid move in a room that exists.
+    Args:
+        move(Object): The move object which contains the x and y (int) coordinates
+        where the move is to be made.
+        current_room(String): The room in which the player resides.
+        io(Object): The socket.io object which is to be used to emit messages
+        to sockets within the room.
+        socket(Object): The connected socket object which is used to emit messages back
+        to the socket.
+        games(Object): The games object which contains the game state information
+        of all currently in progress games (this object will be updated if the move
+        is valid).
+    Ret: Nothing
+    */
     PlayerMove: function (move, current_room, io, socket, games)
     {
         var player = -1;
@@ -8,6 +32,14 @@ module.exports =
         {
             console.log("Error[Room Does Not Exist]: Broadcasting error message now");
             socket.emit('error_res', 'Error[Room Does Not Exist]: Could not make move');
+            return;
+        }
+
+        if(move == undefined || move == null || move.x < 0 || move.y < 0 ||
+           move.x > 2 || move.y > 2)
+        {
+            console.log("Error[Invalid Move]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Invalid Move]: Could not make move');
             return;
         }
 
