@@ -8,6 +8,7 @@
 //Error testing to ensure sockets are handled correctly
 //also implement a closing handshake in order to close sockets
 
+//Required Modules
 var express = require('express'); //express must be installed 
 var path = require('path');
 var randomstring = require("randomstring"); //randomstring must be installed
@@ -19,6 +20,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+//Games object where the currently running games will be stored
 var games = {};
 
 //serve the static web content
@@ -27,14 +29,15 @@ app.use(express.static(path.join(__dirname, 'srv')));
 //start server
 server.listen(8081, function()
 {
-  console.log('listening on port 8081');
+  console.log('Server Started: listening on port 8081');
 });
-
 
 //function that runs when a user connects to a socket
 io.on('connection', function(socket)
 { 
     var current_room;
+
+    //log socket connection
     console.log("a user has connected to socket:" + socket.id);
     socket.emit("socket_id", socket.id)
 
@@ -54,4 +57,3 @@ io.on('connection', function(socket)
     socket.on('move', function(move)
     {socketFun.PlayerMove(move, current_room, io, socket, games);});
 });
-
