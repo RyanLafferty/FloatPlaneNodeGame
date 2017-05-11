@@ -18,10 +18,11 @@ var socketFun = require('./socket');
 //create server objects
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server); //socket.io must be installed
 
 //Games object where the currently running games will be stored
 var games = {};
+var room_passes = {};
 
 //serve the static web content
 app.use(express.static(path.join(__dirname, 'srv'))); 
