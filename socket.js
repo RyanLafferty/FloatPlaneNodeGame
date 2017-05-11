@@ -1,6 +1,5 @@
 module.exports = 
 {
-    //TODO: add logic to determine a draw
     /*
     Desc: The player move function is called when the player requests to make
     a move, this function will update the game state if the player is making a 
@@ -337,6 +336,7 @@ module.exports =
         {
             console.log("Broadcasting error message now");
             socket.emit('error_res', 'failed to create room');
+            return undefined;
         }
     }
 
