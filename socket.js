@@ -1,3 +1,5 @@
+var randomstring = require("randomstring");
+
 module.exports = 
 {
     /*
@@ -395,5 +397,21 @@ module.exports =
         room_passes[current_room] = pass;
         console.log('Set password of room ' + current_room + ' to ' + pass);
         socket.emit('pass_set', pass);
+    },
+
+
+    //TODO documentation
+    PlayerMsg: function(msg, current_room, io, socket)
+    {
+        if(msg == null || msg == undefined)
+        {
+            console.log("Error[Undefined Message]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Undefined Message]: Could not send message');
+            return undefined;
+        }
+
+        var out = socket.id + ': ' + msg;
+
+        io.in(current_room).emit('player_out_msg', out);
     }
 };

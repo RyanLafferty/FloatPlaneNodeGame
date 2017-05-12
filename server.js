@@ -56,4 +56,8 @@ io.on('connection', function(socket)
     //handle player move
     socket.on('move', function(move)
     {socketFun.PlayerMove(move, current_room, io, socket, games, room_passes);});
+
+    //send message to players in the room
+    socket.on('player_in_msg', function(msg) 
+    {socketFun.PlayerMsg(msg, current_room, io, socket);});
 });

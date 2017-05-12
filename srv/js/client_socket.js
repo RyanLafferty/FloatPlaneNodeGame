@@ -5,6 +5,7 @@ var ctx2d = canvas.getContext("2d");
 var width = 480;
 var height = 480;
 var player = -1;
+var chat = "";
 
 var x_img = document.getElementById("x_img");
 var o_img = document.getElementById("o_img");
@@ -59,6 +60,15 @@ function join()
 
     socket.emit('join', roomPack);
     player = 1;
+}
+
+function send_msg()
+{
+    var msg = document.getElementById('player-msg-box').value;
+    if(msg != undefined && msg != null && msg != '')
+    {
+        socket.emit('player_in_msg', msg);
+    }
 }
 
 function users()
@@ -252,6 +262,12 @@ socket.on('player_winner', function(winner)
 socket.on('player_draw', function(draw)
 {
     alert("Draw");
+});
+
+socket.on('player_out_msg', function(msg)
+{
+    chat = chat + msg + "\n<br>\n";
+    document.getElementById('chat-li').innerHTML = chat;
 });
 
 //handle errors

@@ -55,23 +55,30 @@
     </nav>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar" id="menuBar">
+        <div class="col-sm-3 col-md-4 sidebar" id="menuBar">
           <ul class="nav nav-sidebar">
             <li class="sidebar-title">Connected Users: </li>
             <li id="user_list" style="visibility:hidden">
                 This is where the connected users will go
             </li>
             <li class="sidebar-title">Chat: </li>
-            <li id="chat_li" style="visibility:hidden">
-                This is where the chat will go
+            <li id="chat-li" class="msg-box">
+
             <span class="sr-only">(current)</span></li>
-            <li><a href="">Leave Game</a></li>
+
+            <li>
+                <input maxlength="127" minlength="1" id="player-msg-box" class="form-control">
+            </li>
+            <li>
+                <button type="submit" class="form-control btn submit-linus" id="send-button" type="button" onclick="send_msg()">Send</button>
+            </li>
+            <li><a href="" class="leave-color">Leave Game</a></li>
           </ul>
         </div>
         <!-- Navbar stuff ends -->
 
         <!-- Effective Body Starts here -->
-        <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
+        <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-4 main">
         <!--   useful for faking the graphs and anaylitics -->
             <h1>Tic-Tac-Toe</h1>
             <p>&nbsp;</p>
