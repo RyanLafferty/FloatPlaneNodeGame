@@ -46,9 +46,13 @@ io.on('connection', function(socket)
     socket.on('create', function(room) 
     {current_room = socketFun.Create(room, io, socket);});
 
+    //set room password
+    socket.on('set_pass', function(pass) 
+    {socketFun.SetPass(pass, current_room, room_passes, io, socket);});
+
     //join room
     socket.on('join', function(room) 
-    {current_room = socketFun.Join(room, io, socket, games);});
+    {current_room = socketFun.Join(room, room_passes, io, socket, games);});
 
     //list users connected to room
     socket.on('get_user_list', function(room) 
@@ -56,5 +60,5 @@ io.on('connection', function(socket)
 
     //handle player move
     socket.on('move', function(move)
-    {socketFun.PlayerMove(move, current_room, io, socket, games);});
+    {socketFun.PlayerMove(move, current_room, io, socket, games, room_passes);});
 });

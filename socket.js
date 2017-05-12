@@ -17,7 +17,7 @@ module.exports =
         is valid).
     Ret: Nothing
     */
-    PlayerMove: function (move, current_room, io, socket, games)
+    PlayerMove: function (move, current_room, io, socket, games, room_passes)
     {
         var player = -1;
         if(games[current_room] == undefined || games[current_room] == null)
@@ -87,6 +87,8 @@ module.exports =
                     {
                         console.log("winner: " + games[current_room].grid[i][j]);
                         io.in(current_room).emit('player_winner', games[current_room].grid[i][j]);
+                        room_passes[current_room] = undefined;
+                        games[current_room] = undefined;
                         return;
                     }
                 }
@@ -107,6 +109,8 @@ module.exports =
                     {
                         console.log("winner: " + games[current_room].grid[j][i]);
                         io.in(current_room).emit('player_winner', games[current_room].grid[j][i]);
+                        room_passes[current_room] = undefined;
+                        games[current_room] = undefined;
                         return;
                     }
                 }
@@ -117,6 +121,8 @@ module.exports =
                 {
                     console.log("winner: " + games[current_room].grid[1][1]);
                     io.in(current_room).emit('player_winner', games[current_room].grid[1][1]);
+                    room_passes[current_room] = undefined;
+                    games[current_room] = undefined;
                     return;
                 }
                 else if(games[current_room].grid[1][1] >= 0 &&
@@ -125,6 +131,8 @@ module.exports =
                 {
                     console.log("winner: " + games[current_room].grid[1][1]);
                     io.in(current_room).emit('player_winner', games[current_room].grid[1][1]);
+                    room_passes[current_room] = undefined;
+                    games[current_room] = undefined;
                     return;
                 }
 
@@ -145,6 +153,8 @@ module.exports =
                 {
                     console.log("Draw");
                     io.in(current_room).emit('player_draw', 'Draw');
+                    room_passes[current_room] = undefined;
+                    games[current_room] = undefined;
                     return;
                 }
             }
@@ -212,17 +222,37 @@ module.exports =
         player is allowed to join).
     Ret: On success returns room, on failure return undefined.
     */
-    Join: function(room, io, socket, games) 
+    Join: function(roomPack, room_passes, io, socket, games) 
     {
         var join = true;
-        if(room == null || room == undefined || room == '')
+
+
+        if(roomPack == null || roomPack == undefined)
         {
-            console.log("Error[Room Does Not Exist]: Broadcasting error message now");
+            console.log("Error[Room Does Not Exist 01]: Broadcasting error message now");
             socket.emit('error_res', 'Error[Room Does Not Exist]: Could not join requested room');
             return undefined;
         }
 
-        //check if the roome exists and join them to the room
+        var room = roomPack.name;
+        var pass = roomPack.pass;
+
+        if(room == null || room == undefined || room == '')
+        {
+            console.log("Error[Room Does Not Exist 02]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Room Does Not Exist]: Could not join requested room');
+            return undefined;
+        }
+
+        if(room_passes[room] != undefined && room_passes[room] != null &&
+           room_passes[room] != pass)
+        {
+            console.log("Error[Room Auth Failed]: Broadcasting error message now");
+            socket.emit('error_res', 'Error[Room Auth Failed]: Could not authenticate with requested room');
+            return undefined;
+        }
+
+        //check if the room exists and join them to the room
         if(io.sockets.adapter.rooms[room] != undefined)
         {
             var users = io.sockets.adapter.rooms[room].sockets;
@@ -276,7 +306,7 @@ module.exports =
         }
         else
         {
-            console.log("Error[Room Does Not Exist]: Broadcasting error message now");
+            console.log("Error[Room Does Not Exist 03]: Broadcasting error message now");
             socket.emit('error_res', 'Error[Room Does Not Exist]: Could not join requested room');
             return undefined;
         }
@@ -292,7 +322,7 @@ module.exports =
         to sockets within the room.
         socket(Object): The connected socket object which is used to emit messages back
         to the socket.
-    Ret: Nothing
+    Ret: On success returns the room string and on failure returns undefined
     */
     Create: function(room, io, socket) 
     {
@@ -338,6 +368,32 @@ module.exports =
             socket.emit('error_res', 'failed to create room');
             return undefined;
         }
-    }
+    },
 
+
+    /*
+    Desc: This function is called when the user set's a room password,
+    the following function will associated a room with a given password.
+    Args:
+        pass(String): The password to add to the specified room.
+        current_room(String): The room in which the player would like to set the password  for.
+        room_passes(Object): The room_passes object which contains the passwords
+        associated with all the currently in progress games.
+        io(Object): The socket.io object which is to be used to emit messages
+        to sockets within the room.
+        socket(Object): The connected socket object which is used to emit messages back
+        to the socket.
+    Ret: Nothing
+    */
+    SetPass: function(pass, current_room, room_passes, io, socket)
+    {
+        if(pass == null || pass == undefined || pass == '')
+        {
+            return;
+        }
+
+        room_passes[current_room] = pass;
+        console.log('Set password of room ' + current_room + ' to ' + pass);
+        socket.emit('pass_set', pass);
+    }
 };

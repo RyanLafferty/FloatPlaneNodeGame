@@ -22,7 +22,8 @@ for(i = 0; i < 3; i++)
   
 function host()
 {
-    var room = document.getElementById('room-name').value
+    var room = document.getElementById('room-name').value;
+    var pass = document.getElementById('room-pass').value;
 
     if(socket == null || socket == undefined)
     {
@@ -32,19 +33,31 @@ function host()
 
     socket.emit('create', room);
     player = 0;
+
+    if(pass != undefined && pass != null & pass != '')
+    {
+        socket.emit('set_pass', pass);
+    }
 }
 
 function join()
 {
-    var room = document.getElementById('room-name').value
+    var room = document.getElementById('room-name').value;
+    var pass = document.getElementById('room-pass').value;
 
     if(socket == null || socket == undefined)
     {
         alert("Could not connect to server");
         return;
     }
+    if(pass == '')
+    {
+        pass = undefined;
+    }
 
-    socket.emit('join', room);
+    var roomPack = {name:room, pass:pass};
+
+    socket.emit('join', roomPack);
     player = 1;
 }
 
