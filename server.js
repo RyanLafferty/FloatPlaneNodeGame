@@ -1,9 +1,4 @@
 //TODO
-//create room object:
-    //object will store:
-        //password
-        //connected users
-        //game object
 
 //Error testing to ensure sockets are handled correctly
 //also implement a closing handshake in order to close sockets
