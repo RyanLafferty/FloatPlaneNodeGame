@@ -400,14 +400,26 @@ module.exports =
     },
 
 
-    //TODO documentation
+    /*
+    Desc: This function is called when the user sends a message, the
+    following function will send the received message to sockets connected to
+    a given room.
+    Args:
+        msg(String): The msg to send to the connected users.
+        current_room(String): The room in which the player would like to set the password  for.
+        io(Object): The socket.io object which is to be used to emit messages
+        to sockets within the room.
+        socket(Object): The connected socket object which is used to emit messages back
+        to the socket.
+    Ret: Nothing
+    */
     PlayerMsg: function(msg, current_room, io, socket)
     {
         if(msg == null || msg == undefined)
         {
             console.log("Error[Undefined Message]: Broadcasting error message now");
             socket.emit('error_res', 'Error[Undefined Message]: Could not send message');
-            return undefined;
+            return;
         }
 
         var out = socket.id + ': ' + msg;
